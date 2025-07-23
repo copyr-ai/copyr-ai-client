@@ -11,6 +11,11 @@ import { Slider } from "@/components/ui/slider"
 
 export default function SurveyForm() {
   const [currentStep, setCurrentStep] = useState(1)
+  const [surveyRowNumber, setSurveyRowNumber] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadingStage, setLoadingStage] = useState(0) // 0: normal, 1: almost there, 2: bonus question
+  const [showThankYou, setShowThankYou] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
   const [formData, setFormData] = useState({
     // Step 1: Role
     role: '',
@@ -50,9 +55,51 @@ export default function SurveyForm() {
     }))
   }
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep < 11) {
-      setCurrentStep(prev => prev + 1)
+      // If moving from step 10 to 11, store the survey data in Google Sheets
+      if (currentStep === 10) {
+        setIsLoading(true)
+        setLoadingStage(1) // "Almost there..."
+        
+        // First stage delay
+        setTimeout(() => {
+          setLoadingStage(2) // "Bonus question coming up..."
+        }, 1000)
+        
+        try {
+          const response = await fetch('/api/store-survey', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          })
+
+          const result = await response.json()
+          
+          if (result.success) {
+            setSurveyRowNumber(result.rowNumber)
+            // Small delay before moving to next step for better UX
+            setTimeout(() => {
+              setCurrentStep(prev => prev + 1)
+              setIsLoading(false)
+              setLoadingStage(0)
+            }, 800)
+          } else {
+            // alert ('Failed to save your survey data. Please try again.')
+            setIsLoading(false)
+            setLoadingStage(0)
+          }
+        } catch (error) {
+          console.error('Error storing survey data:', error)
+          // alert ('Network error. Please check your connection and try again.')
+          setIsLoading(false)
+          setLoadingStage(0)
+        }
+      } else {
+        setCurrentStep(prev => prev + 1)
+      }
     }
   }
 
@@ -63,75 +110,178 @@ export default function SurveyForm() {
   }
 
   const handleSubmit = async () => {
-    // Temporarily bypass Google Sheets integration
-    // TODO: Re-enable Google Sheets API when ready
-    
-    try {
-      // Simulate successful submission
-      console.log('Survey data (for development):', formData)
-      
-      // Show success message
-      alert('🎉 Awesome! You have been added to the waitlist. We\'ll be in touch soon with exclusive early access!')
-      
-      // Reset form
-      setCurrentStep(1)
-      setFormData({
-        role: '',
-        otherRole: '',
-        copyrightFrequency: '',
-        confidenceLevel: [5],
-        frustrations: [],
-        currentTools: [],
-        monthlySpend: '',
-        databaseValue: '',
-        interestedFeatures: [],
-        earlyAccessInterest: '',
-        email: '',
-        feedbackCall: ''
-      })
-      
-    } catch (error) {
-      console.error('Error submitting survey:', error)
-      alert('There was an error. Please try again.')
+    // Update the feedback call response in the Google Sheet
+    if (!surveyRowNumber) {
+      // alert ('Error: Survey data not found. Please restart the survey.')
+      return
     }
-    
-    /* 
-    // Original Google Sheets implementation (temporarily disabled)
+
+    setIsLoading(true)
     try {
-      const response = await fetch('/api/submit-survey', {
+      const response = await fetch('/api/update-feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          rowNumber: surveyRowNumber,
+          feedbackCall: formData.feedbackCall
+        }),
       })
-      
+
       const result = await response.json()
       
-      if (response.ok && result.success) {
-        alert('Thank you for joining our early access program! We\'ll be in touch soon.')
-        setCurrentStep(1)
-        setFormData({
-          role: '',
-          copyrightFrequency: '',
-          confidenceLevel: [5],
-          frustrations: [],
-          currentTools: [],
-          monthlySpend: '',
-          databaseValue: '',
-          interestedFeatures: [],
-          earlyAccessInterest: '',
-          email: '',
-          feedbackCall: ''
-        })
+      if (result.success) {
+        // Show thank you screen
+        setShowThankYou(true)
       } else {
-        alert('There was an error. Please try again.')
+        // alert ('Failed to complete your survey submission. Please try again.')
       }
+      
     } catch (error) {
-      console.error('Error submitting survey:', error)
-      alert('There was an error. Please try again.')
+      console.error('Error updating feedback response:', error)
+      // alert ('Network error. Please check your connection and try again.')
+    } finally {
+      setIsLoading(false)
     }
-    */
+  }
+
+  const resetForm = () => {
+    setCurrentStep(1)
+    setSurveyRowNumber(null)
+    setShowThankYou(false)
+    setIsLoading(false)
+    setLoadingStage(0)
+    setFormData({
+      role: '',
+      otherRole: '',
+      copyrightFrequency: '',
+      confidenceLevel: [5],
+      frustrations: [],
+      currentTools: [],
+      monthlySpend: '',
+      databaseValue: '',
+      interestedFeatures: [],
+      earlyAccessInterest: '',
+      email: '',
+      feedbackCall: ''
+    })
+  }
+
+  const ThankYouScreen = () => {
+    const shareUrl = window.location.origin
+    const linkedinPostText = `I just completed an interesting survey about copyright challenges in creative work. 
+
+If you're a creator, content producer, or work with copyrighted materials, this quick survey could help shape the future of copyright protection tools.
+
+Worth checking out if you've ever struggled with:
+🔍 Finding copyright ownership info
+⚖️ Understanding licensing terms  
+🛡️ Avoiding accidental infringement
+💡 Streamlining copyright research
+
+Take the survey: ${shareUrl}
+
+#Copyright #CreativeWork #IntellectualProperty #ContentCreation`
+    
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center space-y-8 max-w-2xl mx-auto p-6"
+      >
+        {/* Logo and Success Animation */}
+        <div className="space-y-4">
+          <div className="flex justify-center mb-4">
+            <img 
+              src="/brand-copyr.ai-light.svg" 
+              alt="CopyR.AI" 
+              className="h-12 w-auto"
+            />
+          </div>
+        </div>
+
+        {/* Thank You Message */}
+        <div className="space-y-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+            Thank You!
+          </h2>
+          <div className="bg-gradient-to-r from-[#EC4899] to-[#401BE3] bg-clip-text text-transparent">
+            <p className="text-xl font-semibold">
+              You've been promoted to our exclusive early access list! 🚀
+            </p>
+          <p className="text-gray-600">
+            We'll be in touch soon with your <strong>free early access</strong> with copyright protection tools.
+          </p>
+          </div>
+        </div>
+
+        {/* Share Section */}
+        <div className="bg-gray-50 rounded-xl p-6 space-y-4">
+          <h3 className="text-xl font-semibold text-gray-900">
+            Know someone who needs copyright protection?
+          </h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Help other creators discover AI-powered copyright tools
+          </p>
+          
+          {/* Share Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <Button
+              onClick={async () => {
+                if (navigator.share) {
+                  try {
+                    await navigator.share({
+                      title: 'Copyright Survey - Help Shape AI-Powered Copyright Tools',
+                      text: 'Take this quick survey about copyright challenges in creative work. Help shape the future of copyright protection tools!',
+                      url: shareUrl
+                    })
+                  } catch (error) {
+                    // User cancelled or error occurred, fallback to clipboard
+                    navigator.clipboard.writeText(shareUrl)
+                    // alert ('✅ Survey link copied to clipboard!\n\nShare it with anyone who works with copyrighted content.')
+                  }
+                } else {
+                  // Fallback for browsers that don't support Web Share API
+                  navigator.clipboard.writeText(shareUrl)
+                  // alert ('✅ Survey link copied to clipboard!\n\nShare it with anyone who works with copyrighted content.')
+                }
+              }}
+              className="bg-blue-700 hover:bg-blue-800 text-white flex items-center justify-center gap-2 px-6 py-3"
+            >
+              <span className="text-lg">📤</span>
+              Share Survey
+            </Button>
+            
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(shareUrl)
+                setIsCopied(true)
+                setTimeout(() => {
+                  setIsCopied(false)
+                }, 2000)
+              }}
+              variant="outline"
+              className="border-gray-300 hover:bg-gray-50 flex items-center justify-center gap-2 px-6 py-3"
+            >
+              <span className="text-lg">{isCopied ? '✅' : '🔗'}</span>
+              {isCopied ? 'Copied!' : 'Copy Survey Link'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Start Over Button */}
+        <div className="pt-4">
+          <Button
+            onClick={resetForm}
+            variant="outline"
+            className="text-gray-600 hover:text-gray-800 border-gray-300"
+          >
+            Take Survey Again
+          </Button>
+        </div>
+      </motion.div>
+    )
   }
 
   const renderStep = () => {
@@ -622,14 +772,19 @@ export default function SurveyForm() {
 
   return (
     <>
-      <div className="h-[600px] bg-white p-3 sm:p-6 flex flex-col">
-        {/* Progress indicator */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex justify-between items-center mb-2 sm:mb-3">
-            <span className="text-xs font-medium text-gray-600">Step {currentStep} of 11</span>
-            <span className="text-xs text-gray-500">{Math.round((currentStep / 11) * 100)}% complete</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-1.5">
+      {showThankYou ? (
+        <div className="h-[600px] bg-white p-3 sm:p-6 flex items-center justify-center">
+          <ThankYouScreen />
+        </div>
+      ) : (
+        <div className="h-[600px] bg-white p-3 sm:p-6 flex flex-col">
+          {/* Progress indicator */}
+          <div className="mb-4 sm:mb-6">
+            <div className="flex justify-between items-center mb-2 sm:mb-3">
+              <span className="text-xs font-medium text-gray-600">Step {currentStep} of 11</span>
+              <span className="text-xs text-gray-500">{Math.round((currentStep / 11) * 100)}% complete</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div 
               className="bg-[#EC4899] h-1.5 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${(currentStep / 11) * 100}%` }}
@@ -658,22 +813,44 @@ export default function SurveyForm() {
           {currentStep < 11 ? (
             <Button
               onClick={nextStep}
-              disabled={!isStepValid()}
+              disabled={!isStepValid() || isLoading}
               className="bg-[#EC4899] hover:bg-[#d63384] text-white px-3 sm:px-4 text-xs sm:text-sm"
             >
-              Next
+              {isLoading && currentStep === 10 ? (
+                <span className="flex items-center gap-2">
+                  {loadingStage === 1 ? (
+                    <>
+                      <span className="animate-pulse">⏳</span>
+                      Almost there...
+                    </>
+                  ) : loadingStage === 2 ? (
+                    <>
+                      <span className="animate-pulse">🎯</span>
+                      Bonus question coming up...
+                    </>
+                  ) : (
+                    'Next'
+                  )}
+                </span>
+              ) : 'Next'}
             </Button>
           ) : (
             <Button
               onClick={handleSubmit}
-              disabled={!isStepValid()}
+              disabled={!isStepValid() || isLoading}
               className="bg-[#EC4899] hover:bg-[#d63384] text-white px-4 sm:px-6 text-xs sm:text-sm"
             >
-              🚀 Join Early Access
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin">🎉</span>
+                  Finalizing...
+                </span>
+              ) : '🚀 Join Early Access'}
             </Button>
           )}
         </div>
       </div>
+      )}
     </>
   )
 }

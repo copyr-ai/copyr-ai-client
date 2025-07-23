@@ -144,7 +144,7 @@ export default function HeroSection({ children }) {
             {/* Hero Highlight Badge */}
             <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-pink/10 to-brand-purple/10 border border-brand-pink/20 rounded-full">
               <span className="text-brand-pink font-semibold text-sm tracking-wide">
-                🤌 Copyright has never been so easy
+                ✨ Copyright has never been so easy
               </span>
             </div>
 
