@@ -219,6 +219,13 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     color: transparent;
+    /* Fix for potential text clipping */
+    line-height: 1.2;
+    padding: 0.05em 0.1em;
+    display: inline-block;
+    /* Ensure proper text bounds */
+    overflow: visible;
+    text-overflow: clip;
   }
   
   /* Grainy Background */
@@ -230,20 +237,22 @@
     background-position: 0 0, 10px 10px;
   }
   
-  /* Mouse Blur Circle */
+  /* Mouse Blur Circle - Optimized */
   .mouse-blur {
     position: fixed;
     pointer-events: none;
     z-index: 1;
     border-radius: 50%;
-    background: radial-gradient(circle, var(--brand-pink) 0%, var(--brand-purple) 50%, transparent 70%);
-    filter: blur(40px);
-    opacity: 0.3;
-    transition: transform 0.1s ease-out;
+    background: radial-gradient(circle, var(--brand-pink) 0%, var(--brand-purple) 40%, transparent 60%);
+    filter: blur(15px);
+    opacity: 0.15;
+    transition: none;
     mix-blend-mode: multiply;
+    will-change: transform;
+    transform: translateZ(0);
   }
   
-  /* Custom Modern Cursor - Icons8 */
+  /* Custom Modern Cursor - Optimized */
   * {
     cursor: none !important;
   }
@@ -252,18 +261,20 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     pointer-events: none;
     z-index: 9999;
-    transition: transform 0.1s ease-out;
+    transition: none;
     background-image: url('https://img.icons8.com/?size=100&id=11202&format=png&color=000000');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    will-change: transform;
+    transform: translateZ(0);
   }
   
   .custom-cursor.hover {
-    transform: scale(1.2);
+    transform: scale(1.1) translateZ(0);
   }
 }

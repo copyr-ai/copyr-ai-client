@@ -117,7 +117,7 @@ export default function HeroSection({ children }) {
                 priority
               /> */}
               {/* <span className="text-5xl text-gray-400 font-light flex-shrink-0">-</span> */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-brand-dark leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-brand-dark leading-normal">
                 <span className="gradient-text-copyright">Copyright</span>{" "}
                 <span className="gradient-text-clarity">clarity</span>, without the chaos.
               </h1>
@@ -131,7 +131,7 @@ export default function HeroSection({ children }) {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-4xl mx-auto mb-12"
           >
-            Search, verify, and track the rights of creative works — starting with public domain authorship.
+            Search, verify, and track the rights of creative works; starting with public domain authorship.
           </motion.p>
 
           {/* Hero Highlight Badge + CTA Button Side by Side */}
@@ -399,7 +399,7 @@ export default function HeroSection({ children }) {
                 We're building the future of copyright clarity. In a world where creative works are increasingly digital and global, understanding copyright status shouldn't be a barrier to innovation.
               </p>
               <p>
-                Our mission is to democratize access to copyright information, starting with public domain authorship and expanding to all forms of creative content. We believe that when creators have clear, reliable information about what they can legally use, they can focus on what they do best—creating.
+                Our mission is to democratize access to copyright information, starting with public domain authorship and expanding to all forms of creative content. We believe that when creators have clear, reliable information about what they can legally use, they can focus on what they do best; creating.
               </p>
               <p>
                 Founded by a team of legal experts, technologists, and creative professionals, copyr.ai combines deep copyright knowledge with cutting-edge AI to make copyright research as simple as a search query.

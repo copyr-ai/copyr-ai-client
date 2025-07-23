@@ -38,7 +38,7 @@ export default function About() {
                 whether content could be used legally than actually creating with it.
               </p>
               <p>
-                As creators, designers, and content producers ourselves, we&apos;ve all been there—finding 
+                As creators, designers, and content producers ourselves, we&apos;ve all been there, finding 
                 the perfect image, video, or audio clip, only to get lost in a maze of copyright 
                 databases, conflicting information, and unclear licensing terms.
               </p>
@@ -48,7 +48,7 @@ export default function About() {
                 the rights of content owners.
               </p>
               <p>
-                That&apos;s why we&apos;re building copyr.ai—to bridge the gap between complex copyright law 
+                That&apos;s why we&apos;re building copyr.ai to bridge the gap between complex copyright law 
                 and practical creative needs.
               </p>
             </div>
