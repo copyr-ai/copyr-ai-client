@@ -98,7 +98,19 @@ export default function SurveyForm() {
           setLoadingStage(0)
         }
       } else {
-        setCurrentStep(prev => prev + 1)
+        // Check if we need to show an interactive slide
+        if (currentStep === 3) {
+          // Show slide after confidence question
+          setCurrentStep('slide1')
+        } else if (currentStep === 6) {
+          // Show slide after monthly spend question
+          setCurrentStep('slide2')
+        } else if (currentStep === 9) {
+          // Show slide after early access question
+          setCurrentStep('slide3')
+        } else {
+          setCurrentStep(prev => prev + 1)
+        }
       }
     }
   }
@@ -284,7 +296,122 @@ Take the survey: ${shareUrl}
     )
   }
 
+  const renderSlide = (slideNumber) => {
+    const slides = {
+      slide1: {
+        title: "Great start!",
+        subtitle: "You're helping shape the future of copyright clarity",
+        description: "Now let's dive deeper into your specific challenges and needs",
+        icon: "🚀",
+        gradient: "from-blue-500 to-purple-600"
+      },
+      slide2: {
+        title: "Perfect!",
+        subtitle: "Understanding your investment helps us create better value",
+        description: "Next, let's explore what features would be most valuable to you",
+        icon: "💡",
+        gradient: "from-green-500 to-teal-600"
+      },
+      slide3: {
+        title: "Almost there!",
+        subtitle: "Your insights are incredibly valuable to us",
+        description: "Just a couple more questions and you'll be all set",
+        icon: "🌟",
+        gradient: "from-pink-500 to-rose-600"
+      }
+    }
+
+    const slide = slides[slideNumber]
+    
+    return (
+      <motion.div
+        key={slideNumber}
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 1.1, y: -20 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex flex-col items-center justify-center h-full text-center space-y-8"
+      >
+        {/* Animated Icon */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.5, type: "spring", stiffness: 200 }}
+          className={`text-6xl sm:text-7xl mb-4`}
+        >
+          {slide.icon}
+        </motion.div>
+
+        {/* Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="space-y-4 max-w-2xl mx-auto"
+        >
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            {slide.title}
+          </h2>
+          
+          <div className={`bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent`}>
+            <p className="text-xl sm:text-2xl font-semibold">
+              {slide.subtitle}
+            </p>
+          </div>
+          
+          <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+            {slide.description}
+          </p>
+        </motion.div>
+
+        {/* Animated Continue Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+        >
+          <Button
+            onClick={() => {
+              if (slideNumber === 'slide1') setCurrentStep(4)
+              else if (slideNumber === 'slide2') setCurrentStep(7)
+              else if (slideNumber === 'slide3') setCurrentStep(10)
+            }}
+            className="bg-gradient-to-r from-[#EC4899] to-[#401BE3] hover:from-[#EC4899]/90 hover:to-[#401BE3]/90 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            Continue ✨
+          </Button>
+        </motion.div>
+
+        {/* Progress Dots */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          className="flex space-x-2"
+        >
+          {[1, 2, 3].map((dot) => (
+            <div
+              key={dot}
+              className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                (slideNumber === 'slide1' && dot === 1) ||
+                (slideNumber === 'slide2' && dot === 2) ||
+                (slideNumber === 'slide3' && dot === 3)
+                  ? 'bg-[#EC4899]'
+                  : 'bg-gray-300'
+              }`}
+            />
+          ))}
+        </motion.div>
+      </motion.div>
+    )
+  }
+
   const renderStep = () => {
+    // Handle interactive slides
+    if (typeof currentStep === 'string' && currentStep.startsWith('slide')) {
+      return renderSlide(currentStep)
+    }
+
     switch (currentStep) {
       case 1:
         return (
@@ -362,19 +489,22 @@ Take the survey: ${shareUrl}
             <RadioGroup value={formData.copyrightFrequency} onValueChange={(value) => updateFormData('copyrightFrequency', value)}>
               <div className="grid grid-cols-1 gap-2 max-w-3xl mx-auto">
                 {[
-                  'Daily - It\'s a core part of my work',
-                  'Weekly - Regularly but not constantly',
-                  'Monthly - Occasionally for projects',
-                  'Rarely - Only when specifically needed',
-                  'Never - I don\'t work with copyrighted content'
+                  { text: 'Daily - It\'s a core part of my work', bold: 'Daily' },
+                  { text: 'Weekly - Regularly but not constantly', bold: 'Weekly' },
+                  { text: 'Monthly - Occasionally for projects', bold: 'Monthly' },
+                  { text: 'Rarely - Only when specifically needed', bold: 'Rarely' },
+                  { text: 'Never - I don\'t work with copyrighted content', bold: 'Never' }
                 ].map((frequency) => (
                   <motion.div 
-                    key={frequency}
+                    key={frequency.text}
                     whileHover={{ scale: 1.01 }}
                     className="flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                   >
-                    <RadioGroupItem value={frequency} id={frequency} />
-                    <Label htmlFor={frequency} className="cursor-pointer flex-1 text-xs sm:text-sm leading-tight">{frequency}</Label>
+                    <RadioGroupItem value={frequency.text} id={frequency.text} />
+                    <Label htmlFor={frequency.text} className="cursor-pointer flex-1 text-xs sm:text-sm leading-tight">
+                      <span className="font-bold">{frequency.bold}</span>
+                      {frequency.text.substring(frequency.bold.length)}
+                    </Label>
                   </motion.div>
                 ))}
               </div>
@@ -480,10 +610,7 @@ Take the survey: ${shareUrl}
                 'Legal databases (Westlaw, LexisNexis)',
                 'Stock photo/media platforms',
                 'Creative Commons search',
-                'Library archives',
-                'Legal consultation',
-                'None - I avoid copyrighted content',
-                'Other'
+                'None - I avoid copyrighted content'
               ].map((tool) => (
                 <motion.div 
                   key={tool}
@@ -498,6 +625,50 @@ Take the survey: ${shareUrl}
                   <Label htmlFor={tool} className="cursor-pointer flex-1 text-xs sm:text-sm leading-tight">{tool}</Label>
                 </motion.div>
               ))}
+              
+              {/* Other option with input field */}
+              <motion.div 
+                whileHover={{ scale: 1.01 }}
+                className="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"
+              >
+                <Checkbox
+                  id="Other"
+                  checked={formData.currentTools.includes('Other') || formData.currentTools.some(tool => tool.startsWith('Other: '))}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      handleCheckboxChange('currentTools', 'Other', true)
+                    } else {
+                      // Remove both "Other" and any "Other: ..." entries
+                      setFormData(prev => ({
+                        ...prev,
+                        currentTools: prev.currentTools.filter(tool => tool !== 'Other' && !tool.startsWith('Other: '))
+                      }))
+                    }
+                  }}
+                />
+                {formData.currentTools.includes('Other') || formData.currentTools.some(tool => tool.startsWith('Other: ')) ? (
+                  <Input
+                    type="text"
+                    value={formData.currentTools.find(tool => tool.startsWith('Other: '))?.replace('Other: ', '') || ''}
+                    onChange={(e) => {
+                      const otherValue = e.target.value
+                      setFormData(prev => ({
+                        ...prev,
+                        currentTools: [
+                          ...prev.currentTools.filter(tool => tool !== 'Other' && !tool.startsWith('Other: ')),
+                          otherValue ? `Other: ${otherValue}` : 'Other'
+                        ]
+                      }))
+                    }}
+                    placeholder="Please specify..."
+                    className="flex-1 text-xs sm:text-sm h-6 border-0 bg-transparent p-0 focus:ring-0 focus:border-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                    style={{ boxShadow: 'none', border: 'none' }}
+                    autoFocus
+                  />
+                ) : (
+                  <Label htmlFor="Other" className="cursor-pointer flex-1 text-xs sm:text-sm leading-tight">Other</Label>
+                )}
+              </motion.div>
             </div>
           </motion.div>
         )
@@ -742,6 +913,11 @@ Take the survey: ${shareUrl}
   }
 
   const isStepValid = () => {
+    // Slides are always valid (auto-advance)
+    if (typeof currentStep === 'string' && currentStep.startsWith('slide')) {
+      return true
+    }
+
     switch (currentStep) {
       case 1:
         return formData.role !== '' && (formData.role !== 'Other' || formData.otherRole.trim() !== '')
@@ -781,13 +957,25 @@ Take the survey: ${shareUrl}
           {/* Progress indicator */}
           <div className="mb-4 sm:mb-6">
             <div className="flex justify-between items-center mb-2 sm:mb-3">
-              <span className="text-xs font-medium text-gray-600">Step {currentStep} of 11</span>
-              <span className="text-xs text-gray-500">{Math.round((currentStep / 11) * 100)}% complete</span>
+              <span className="text-xs font-medium text-gray-600">
+                {typeof currentStep === 'string' && currentStep.startsWith('slide') 
+                  ? `Insight ${currentStep.replace('slide', '')}/3` 
+                  : `Step ${currentStep} of 11`}
+              </span>
+              <span className="text-xs text-gray-500">
+                {typeof currentStep === 'string' && currentStep.startsWith('slide')
+                  ? 'Interactive insight'
+                  : `${Math.round((currentStep / 11) * 100)}% complete`}
+              </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div 
               className="bg-[#EC4899] h-1.5 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${(currentStep / 11) * 100}%` }}
+              style={{ 
+                width: typeof currentStep === 'string' && currentStep.startsWith('slide')
+                  ? '50%' // Show 50% for slides
+                  : `${(currentStep / 11) * 100}%` 
+              }}
             ></div>
           </div>
         </div>
@@ -801,16 +989,23 @@ Take the survey: ${shareUrl}
 
         {/* Navigation */}
         <div className="flex justify-between items-center pt-3 sm:pt-4">
-          <Button
-            onClick={prevStep}
-            disabled={currentStep === 1}
-            variant="outline"
-            className="px-3 sm:px-4 text-xs sm:text-sm"
-          >
-            Back
-          </Button>
+          {/* Hide back button on slides for cleaner experience */}
+          {!(typeof currentStep === 'string' && currentStep.startsWith('slide')) && (
+            <Button
+              onClick={prevStep}
+              disabled={currentStep === 1}
+              variant="outline"
+              className="px-3 sm:px-4 text-xs sm:text-sm"
+            >
+              Back
+            </Button>
+          )}
+          
+          {/* Add spacer when back button is hidden */}
+          {typeof currentStep === 'string' && currentStep.startsWith('slide') && <div></div>}
 
-          {currentStep < 11 ? (
+          {/* Hide next button on slides since they have their own continue button */}
+          {!(typeof currentStep === 'string' && currentStep.startsWith('slide')) && currentStep < 11 && (
             <Button
               onClick={nextStep}
               disabled={!isStepValid() || isLoading}
@@ -834,7 +1029,9 @@ Take the survey: ${shareUrl}
                 </span>
               ) : 'Next'}
             </Button>
-          ) : (
+          )}
+          
+          {currentStep === 11 && (
             <Button
               onClick={handleSubmit}
               disabled={!isStepValid() || isLoading}
