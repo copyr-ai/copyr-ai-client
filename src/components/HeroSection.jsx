@@ -12,6 +12,7 @@ export default function HeroSection({ children }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
   const [isLaptopView, setIsLaptopView] = useState(false)
+  const [isOverFooter, setIsOverFooter] = useState(false)
   
   // Check if screen is laptop size for cursor effects
   useEffect(() => {
@@ -31,6 +32,17 @@ export default function HeroSection({ children }) {
     
     const updateMousePosition = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
+      
+      // Check if cursor is over footer
+      const footerElement = document.querySelector('footer')
+      if (footerElement) {
+        const footerRect = footerElement.getBoundingClientRect()
+        const isInFooter = e.clientY >= footerRect.top && 
+                          e.clientY <= footerRect.bottom &&
+                          e.clientX >= footerRect.left && 
+                          e.clientX <= footerRect.right
+        setIsOverFooter(isInFooter)
+      }
     }
     
     const handleMouseEnter = () => setIsHovering(true)
@@ -73,7 +85,7 @@ export default function HeroSection({ children }) {
       {isLaptopView && (
         <>
           <div 
-            className={`custom-cursor ${isHovering ? 'hover' : ''}`}
+            className={`custom-cursor ${isHovering ? 'hover' : ''} ${isOverFooter ? 'footer' : ''}`}
             style={{
               left: mousePosition.x,
               top: mousePosition.y,

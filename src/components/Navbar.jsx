@@ -47,7 +47,7 @@ export default function Navbar() {
         y: isHidden ? -20 : 0 
       }}
       transition={{ duration: 0.3 }}
-      className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200"
+      className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200 overflow-visible"
     >
       <div className="flex items-center justify-between px-8 py-4">
         {/* Logo */}
@@ -88,7 +88,11 @@ export default function Navbar() {
               })
             }
           }}
-          className="hidden md:block bg-gradient-to-r from-brand-pink to-brand-purple hover:from-brand-pink/90 hover:to-brand-purple/90 text-white font-medium px-6 py-2 rounded-full transition-all duration-300"
+          className="hidden md:block bg-gradient-to-r from-brand-pink to-brand-purple hover:from-brand-pink/90 hover:to-brand-purple/90 text-white font-medium px-6 py-2 rounded-full transition-all duration-300 relative z-10"
+          style={{
+            background: 'linear-gradient(to right, #EC4899, #401BE3)',
+            borderRadius: '9999px'
+          }}
         >
           Join waitlist
         </Button>

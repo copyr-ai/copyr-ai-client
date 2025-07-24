@@ -8,6 +8,7 @@ const nunitoSans = Nunito_Sans({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://copyr.ai'),
   title: "copyr.ai - Copyright clarity, without the chaos",
   description: "Search, verify, and track the rights of creative works; starting with public domain authorship. AI-powered copyright protection tools for creators.",
   keywords: "copyright, public domain, creative works, authorship, legal-tech, creator-economy, rights-management, copyright search, intellectual property",

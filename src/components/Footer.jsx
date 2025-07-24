@@ -9,11 +9,11 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <Image
-                src="brand-copyr.ai-dark.svg"
+                src="/brand-copyr.ai-dark.svg"
                 alt="copyr.ai"
                 width={150}
                 height={45}
-                className="h-10 w-auto brightness-0 invert"
+                className="h-10 w-auto"
               />
             </div>
             <p className="text-gray-300 text-lg mb-6 max-w-md">
