@@ -137,7 +137,9 @@ export default function SurveyForm() {
         },
         body: JSON.stringify({
           rowNumber: surveyRowNumber,
-          feedbackCall: formData.feedbackCall
+          feedbackCall: formData.feedbackCall,
+          email: formData.email,
+          name: formData.role === 'Other' ? formData.otherRole : formData.role
         }),
       })
 

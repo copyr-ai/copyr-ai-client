@@ -1,8 +1,9 @@
 import { google } from 'googleapis';
+import { sendWelcomeEmail } from '@/lib/emailUtils';
 
 export async function POST(request) {
   try {
-    const { rowNumber, feedbackCall } = await request.json();
+    const { rowNumber, feedbackCall, email, name } = await request.json();
     
     if (!rowNumber || !feedbackCall) {
       return Response.json({ 
@@ -43,6 +44,21 @@ export async function POST(request) {
         values: [[feedbackCall]],
       },
     });
+
+    // Send welcome email after successful feedback update (survey completion)
+    if (email) {
+      try {
+        const emailResult = await sendWelcomeEmail(email, name || '', feedbackCall);
+        if (!emailResult.success) {
+          console.warn('Email sending failed:', emailResult.message);
+        } else {
+          console.log('Welcome email sent successfully to:', email);
+        }
+      } catch (emailError) {
+        console.warn('Email sending failed:', emailError);
+        // Don't fail the whole request if email fails
+      }
+    }
 
     return Response.json({ 
       success: true, 

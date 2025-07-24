@@ -21,7 +21,7 @@ export async function POST(request) {
     // Initialize Google Sheets API
     const auth = new google.auth.GoogleAuth({
       credentials,
-      scopes: ['https://www.googleapis.com/spreadsheets'],
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
     const sheets = google.sheets({ version: 'v4', auth });
@@ -53,6 +53,29 @@ export async function POST(request) {
         values: [row],
       },
     });
+
+    // Send welcome email after successful sheet submission
+    try {
+      const emailResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000' || 'https://copyr-ai.vercel.app/'}/api/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: surveyData.email,
+          name: surveyData.name,
+          feedbackOption: surveyData.feedbackInterest // Assuming this field exists in your survey
+        }),
+      });
+
+      const emailResult = await emailResponse.json();
+      if (!emailResult.success) {
+        console.warn('Email sending failed:', emailResult.message);
+      }
+    } catch (emailError) {
+      console.warn('Email sending failed:', emailError);
+      // Don't fail the whole request if email fails
+    }
 
     // Return success response (no sensitive data)
     return Response.json({ 

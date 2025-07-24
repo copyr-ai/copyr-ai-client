@@ -11,7 +11,7 @@ export default function Footer() {
       // Try multiple approaches for better compatibility
       const subject = encodeURIComponent(`Contact from ${email}`)
       const body = encodeURIComponent(`From: ${email}\n\nMessage:\n${message}`)
-      const mailtoUrl = `mailto:mattiazucconi@gmail.com?subject=${subject}&body=${body}`
+      const mailtoUrl = `mailto:hello@copyr.ai?subject=${subject}&body=${body}`
       
       try {
         // Primary method: use window.location
@@ -27,10 +27,10 @@ export default function Footer() {
           document.body.removeChild(link)
         } catch (fallbackError) {
           // Final fallback: copy email to clipboard and alert user
-          navigator.clipboard.writeText('mattiazucconi@gmail.com').then(() => {
-            alert('Please send your message to: mattiazucconi@gmail.com (email copied to clipboard)')
+          navigator.clipboard.writeText('hello@copyr.ai').then(() => {
+            alert('Please send your message to: hello@copyr.ai (email copied to clipboard)')
           }).catch(() => {
-            alert('Please send your message to: mattiazucconi@gmail.com')
+            alert('Please send your message to: hello@copyr.ai')
           })
         }
       }
