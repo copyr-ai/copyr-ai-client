@@ -8,7 +8,33 @@ export default function Footer() {
   const handleEmailSubmit = (e) => {
     e.preventDefault()
     if (email && message) {
-      window.location.href = `mailto:mattiazucconi@gmail.com?subject=Contact from ${email}&body=${encodeURIComponent(message)}`
+      // Try multiple approaches for better compatibility
+      const subject = encodeURIComponent(`Contact from ${email}`)
+      const body = encodeURIComponent(`From: ${email}\n\nMessage:\n${message}`)
+      const mailtoUrl = `mailto:mattiazucconi@gmail.com?subject=${subject}&body=${body}`
+      
+      try {
+        // Primary method: use window.location
+        window.location.href = mailtoUrl
+      } catch (error) {
+        try {
+          // Fallback: create a temporary link and click it
+          const link = document.createElement('a')
+          link.href = mailtoUrl
+          link.target = '_blank'
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        } catch (fallbackError) {
+          // Final fallback: copy email to clipboard and alert user
+          navigator.clipboard.writeText('mattiazucconi@gmail.com').then(() => {
+            alert('Please send your message to: mattiazucconi@gmail.com (email copied to clipboard)')
+          }).catch(() => {
+            alert('Please send your message to: mattiazucconi@gmail.com')
+          })
+        }
+      }
+      
       setEmail("")
       setMessage("")
     }
@@ -91,7 +117,7 @@ export default function Footer() {
               >
                 Send Message
               </button>
-              <p className="text-xs text-gray-400">We'll respond to your inquiry at mattiazucconi@gmail.com</p>
+              <p className="text-xs text-gray-400">We'll respond to your inquiry at the soonest.</p>
             </form>
           </div>
         </div>

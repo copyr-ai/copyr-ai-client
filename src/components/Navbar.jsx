@@ -64,13 +64,13 @@ export default function Navbar() {
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-8 mx-12">
-          <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">Features</a>
-          <a href="#about" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">About</a>
+          <a href="#features" className="text-gray-600 hover:text-gray-900 hover:font-semibold font-medium transition-all duration-200">Features</a>
+          <a href="#about" className="text-gray-600 hover:text-gray-900 hover:font-semibold font-medium transition-all duration-200">About</a>
           <a 
             href="https://linkedin.com/company/copyr-ai" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+            className="text-gray-600 hover:text-gray-900 hover:font-semibold font-medium transition-all duration-200"
           >
             Connect
           </a>
