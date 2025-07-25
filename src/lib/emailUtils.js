@@ -4,8 +4,18 @@ import nodemailer from 'nodemailer';
 const getWaitlistEmail = (name, feedbackOption) => {
   const baseEmail = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+      <style>
+        @media (prefers-color-scheme: dark) {
+          .light-logo { display: none !important; }
+          .dark-logo { display: inline-block !important; }
+        }
+        @media (prefers-color-scheme: light) {
+          .light-logo { display: inline-block !important; }
+          .dark-logo { display: none !important; }
+        }
+      </style>
       <div style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        <!-- Header -->
+        <!-- Header with Logo -->
         <div style="text-align: center; margin-bottom: 40px;">
           <h1 style="color: #1f2937; font-size: 28px; margin: 0;">
             Welcome to copyr.ai
@@ -80,7 +90,7 @@ export async function sendWelcomeEmail(email, name, feedbackOption) {
     }
 
     // Create nodemailer transporter
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST, // e.g., 'smtp.hostinger.com'
       port: process.env.SMTP_PORT || 587,
       secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
