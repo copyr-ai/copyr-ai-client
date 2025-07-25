@@ -20,8 +20,8 @@ const getWaitlistEmail = (name, feedbackOption) => {
           <h1 style="color: #1f2937; font-size: 28px; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px;">
             Welcome to copyr.ai
             <span class="logo-container">
-              <img src="${process.env.NEXTAUTH_URL || 'https://copyr.ai'}/brand-copyr.ai-light.svg" alt="copyr.ai" style="height: 32px; width: auto;" class="light-logo" />
-              <img src="${process.env.NEXTAUTH_URL || 'https://copyr.ai'}/brand-copyr.ai-dark.svg" alt="copyr.ai" style="height: 32px; width: auto; display: none;" class="dark-logo" />
+              <img src="https://raw.githubusercontent.com/copyr-ai/copyr-ai-client/master/public/brand-copyr.ai-light.svg" alt="copyr.ai" style="height: 32px; width: auto;" class="light-logo" />
+              <img src="https://raw.githubusercontent.com/copyr-ai/copyr-ai-client/master/public/brand-copyr.ai-dark.svg" alt="copyr.ai" style="height: 32px; width: auto; display: none;" class="dark-logo" />
             </span>
           </h1>
           <div style="width: 60px; height: 4px; background: linear-gradient(to right, #EC4899, #401BE3); margin: 20px auto;"></div>
