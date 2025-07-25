@@ -4,25 +4,11 @@ import nodemailer from 'nodemailer';
 const getWaitlistEmail = (name, feedbackOption) => {
   const baseEmail = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
-      <style>
-        @media (prefers-color-scheme: dark) {
-          .light-logo { display: none !important; }
-          .dark-logo { display: inline-block !important; }
-        }
-        @media (prefers-color-scheme: light) {
-          .light-logo { display: inline-block !important; }
-          .dark-logo { display: none !important; }
-        }
-      </style>
       <div style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        <!-- Header with Logo -->
+        <!-- Header -->
         <div style="text-align: center; margin-bottom: 40px;">
-          <h1 style="color: #1f2937; font-size: 28px; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px;">
+          <h1 style="color: #1f2937; font-size: 28px; margin: 0;">
             Welcome to copyr.ai
-            <span class="logo-container">
-              <img src="https://raw.githubusercontent.com/copyr-ai/copyr-ai-client/master/public/brand-copyr.ai-light.svg" alt="copyr.ai" style="height: 32px; width: auto;" class="light-logo" />
-              <img src="https://raw.githubusercontent.com/copyr-ai/copyr-ai-client/master/public/brand-copyr.ai-dark.svg" alt="copyr.ai" style="height: 32px; width: auto; display: none;" class="dark-logo" />
-            </span>
           </h1>
           <div style="width: 60px; height: 4px; background: linear-gradient(to right, #EC4899, #401BE3); margin: 20px auto;"></div>
         </div>
@@ -94,7 +80,7 @@ export async function sendWelcomeEmail(email, name, feedbackOption) {
     }
 
     // Create nodemailer transporter
-    const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransporter({
       host: process.env.SMTP_HOST, // e.g., 'smtp.hostinger.com'
       port: process.env.SMTP_PORT || 587,
       secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
