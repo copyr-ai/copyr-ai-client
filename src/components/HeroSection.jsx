@@ -417,17 +417,6 @@ export default function HeroSection({ children }) {
                 Founded by a team of legal experts, technologists, and creative professionals, copyr.ai combines deep copyright knowledge with cutting-edge AI to make copyright research as simple as a search query.
               </p>
             </div>
-            
-            <div className="mt-8 grid grid-cols-2 gap-8">
-              <div>
-                <h4 className="text-2xl font-bold text-brand-pink mb-2">10M+</h4>
-                <p className="text-gray-600">Works in our database</p>
-              </div>
-              <div>
-                <h4 className="text-2xl font-bold text-brand-purple mb-2">99.9%</h4>
-                <p className="text-gray-600">Accuracy rate</p>
-              </div>
-            </div>
           </motion.div>
 
           <motion.div
