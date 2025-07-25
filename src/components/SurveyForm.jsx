@@ -975,7 +975,7 @@ Take the survey: ${shareUrl}
               className="bg-[#EC4899] h-1.5 rounded-full transition-all duration-300 ease-out"
               style={{ 
                 width: typeof currentStep === 'string' && currentStep.startsWith('slide')
-                  ? '50%' // Show 50% for slides
+                  ? currentStep === 'slide1' ? '27%' : currentStep === 'slide2' ? '64%' : '82%' // Progress for each slide
                   : `${(currentStep / 11) * 100}%` 
               }}
             ></div>
