@@ -441,7 +441,6 @@ Take the survey: ${shareUrl}
                 ].map((role) => (
                   <motion.div 
                     key={role}
-                    whileHover={{ scale: 1.01 }}
                     className="flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                   >
                     <RadioGroupItem value={role} id={role} />
@@ -451,7 +450,6 @@ Take the survey: ${shareUrl}
                 
                 {/* Other option as input field */}
                 <motion.div 
-                  whileHover={{ scale: 1.01 }}
                   className="flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                 >
                   <RadioGroupItem value="Other" id="Other" />
@@ -499,7 +497,7 @@ Take the survey: ${shareUrl}
                 ].map((frequency) => (
                   <motion.div 
                     key={frequency.text}
-                    whileHover={{ scale: 1.01 }}
+                    
                     className="flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                   >
                     <RadioGroupItem value={frequency.text} id={frequency.text} />
@@ -576,7 +574,7 @@ Take the survey: ${shareUrl}
               ].map((frustration) => (
                 <motion.div 
                   key={frustration}
-                  whileHover={{ scale: 1.01 }}
+                  
                   className="flex items-center space-x-2 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                 >
                   <Checkbox
@@ -616,7 +614,7 @@ Take the survey: ${shareUrl}
               ].map((tool) => (
                 <motion.div 
                   key={tool}
-                  whileHover={{ scale: 1.01 }}
+                  
                   className="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"
                 >
                   <Checkbox
@@ -630,7 +628,7 @@ Take the survey: ${shareUrl}
               
               {/* Other option with input field */}
               <motion.div 
-                whileHover={{ scale: 1.01 }}
+                
                 className="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"
               >
                 <Checkbox
@@ -700,7 +698,7 @@ Take the survey: ${shareUrl}
                 ].map((spend) => (
                   <motion.div 
                     key={spend}
-                    whileHover={{ scale: 1.01 }}
+                    
                     className="flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                   >
                     <RadioGroupItem value={spend} id={spend} />
@@ -737,7 +735,7 @@ Take the survey: ${shareUrl}
                 ].map((value) => (
                   <motion.div 
                     key={value}
-                    whileHover={{ scale: 1.01 }}
+                    
                     className="flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                   >
                     <RadioGroupItem value={value} id={value} />
@@ -777,7 +775,7 @@ Take the survey: ${shareUrl}
               ].map((feature) => (
                 <motion.div 
                   key={feature}
-                  whileHover={{ scale: 1.01 }}
+                  
                   className="flex items-center space-x-2 p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"
                 >
                   <Checkbox
@@ -822,8 +820,8 @@ Take the survey: ${shareUrl}
                 ].map((interest) => (
                   <motion.div 
                     key={interest.value}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
+                    
+                    
                     className={`flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-all ${
                       interest.highlight && (formData.earlyAccessInterest === '' || formData.earlyAccessInterest === interest.value)
                         ? 'border-[#EC4899] bg-gradient-to-r from-[#EC4899]/5 to-[#401BE3]/5' 
@@ -897,7 +895,7 @@ Take the survey: ${shareUrl}
                 ].map((option) => (
                   <motion.div 
                     key={option}
-                    whileHover={{ scale: 1.01 }}
+                    
                     className="flex items-center space-x-3 p-2 sm:p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                   >
                     <RadioGroupItem value={option} id={option} />
@@ -971,23 +969,23 @@ Take the survey: ${shareUrl}
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-1.5">
-            <div 
-              className="bg-[#EC4899] h-1.5 rounded-full transition-all duration-300 ease-out"
-              style={{ 
-                width: typeof currentStep === 'string' && currentStep.startsWith('slide')
-                  ? currentStep === 'slide1' ? '27%' : currentStep === 'slide2' ? '64%' : '82%' // Progress for each slide
-                  : `${(currentStep / 11) * 100}%` 
-              }}
-            ></div>
+              <div 
+                className="bg-[#EC4899] h-1.5 rounded-full transition-all duration-300 ease-out"
+                style={{ 
+                  width: typeof currentStep === 'string' && currentStep.startsWith('slide')
+                    ? currentStep === 'slide1' ? '27%' : currentStep === 'slide2' ? '64%' : '82%' // Progress for each slide
+                    : `${(currentStep / 11) * 100}%` 
+                }}
+              ></div>
+            </div>
           </div>
-        </div>
 
-        {/* Form content */}
-        <div className="flex-1 flex items-center justify-center overflow-hidden">
-          <div className="w-full max-w-full px-2 sm:px-0">
-            {renderStep()}
+          {/* Form content */}
+          <div className="flex-1 flex items-center justify-center overflow-hidden">
+            <div className="w-full max-w-full px-2 sm:px-0">
+              {renderStep()}
+            </div>
           </div>
-        </div>
 
         {/* Navigation */}
         <div className="flex justify-between items-center pt-3 sm:pt-4">
